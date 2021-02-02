@@ -1,0 +1,12 @@
+
+<div>
+    <div class="new-todo">
+        <label class="toggle-all" textWrap="true" >{{getIcon()}}</label>
+        <input #taskinput class="input-main " [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  /></div>
+    <div *ngFor="let task of todoList"><app-item [item]="task"></app-item></div>
+    <div *ngIf="todoList.length>0" style="background-color: rgb(248, 245, 241); float:right"> 
+        <button>All</button>
+        <button>Active</button>
+        <button>Completed</button>
+    </div>
+</div>
