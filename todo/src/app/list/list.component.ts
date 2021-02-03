@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import {IItemStruct} from '../item/item.component'
-
+import {IItemStruct} from '../item/item.component';
+import {TaskManagerService} from '../task-manager.service';
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -10,10 +10,9 @@ export class ListComponent implements OnInit {
 
   readonly DAFAULTMSG:string="What needs to be done?";
   defaultInput:string =  this.DAFAULTMSG;
-  todoList:IItemStruct[] = [];
   isFolded:boolean = false;
   
-  constructor() { }
+  constructor(public taskService:TaskManagerService ) { }
 
   ngOnInit(): void {
   }
@@ -25,7 +24,7 @@ export class ListComponent implements OnInit {
       isRemove:false,
       isTick:false
     }
-    this.todoList.push(task);
+    this.taskService.todoList.push(task);
   }
 
   foldList():void{
@@ -35,11 +34,11 @@ export class ListComponent implements OnInit {
   onAllTcikComplete():void{
     // TODO send to the server that all task are completed.
     // and then clear all todoList
-    this.todoList.forEach(x=>x.isTick=true);
+    this.taskService.todoList.forEach(x=>x.isTick=true);
   }
 
   onDeleteCompleteTask():void{
-    this.todoList = this.todoList.filter(x=>x.complete != true);
+    this.taskService.removeAllCompleteTask();
   }
 
   onFocus():void{
@@ -57,12 +56,23 @@ export class ListComponent implements OnInit {
   }
 
   getIcon():string{
-    return this.todoList.length>0 ? "❯" : "";
+    return this.taskService.todoList.length>0 ? "❯" : "";
   }
 
   
  
-  //TODO 將任務儲存到服務中，子層級要通知母層級，最後當此完成則陣列資料才是真正的連動
+
+  onbtnRemoveAllCompletedTasks(){
+    
+   //let completedList = this.taskService.todoList.filter(x=>x.complete);
+   //TODO send to the server
+   this.taskService.todoList = this.taskService.todoList.filter(x=>!x.complete);
+   console.log("clear")
+  }
+
+
+
+
 }
 
 

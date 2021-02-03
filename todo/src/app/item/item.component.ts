@@ -1,4 +1,6 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit,Input } from '@angular/core';
+import {TaskManagerService} from '../task-manager.service';
 
 export interface IItemStruct{
   name:string,
@@ -19,25 +21,18 @@ export class ItemComponent implements OnInit {
   //isRemove:boolean;
   isFocus:boolean;
 
-  constructor() { }
+  constructor(public taskService:TaskManagerService) { }
   ngOnInit(): void {
   }
 
 
 
-  onChange(name:string):void{
-    //TODO emit event: the task has been changed.
-    //如果資料為空，刪除任務
-    //反之，修改資料名稱
-  }
-
   onComplete():void{
-    //TODO emit event: the task has been changed.
-    this.item.complete = !this.item.complete;
+    this.taskService.completeTask(this.item);
   }
 
   onDelete():void{
-    this.item.isRemove = true;
+    this.taskService.removeTask(this.item);
   }
 
   mouseEnter(){
@@ -48,16 +43,21 @@ export class ItemComponent implements OnInit {
   if(!event.target.value){
     return this.onDelete();
   }
-  this.item.name = event.target.value;
+  this.taskService.updateTaskName(this.item,event.target.value);
+  //this.item.name = event.target.value;
+  //this.taskService.todoList.find(x=>x.name == this.item.name).name = this.item.name;
 }
 
   onChangeTick(){
     this.item.isTick = !this.item.isTick;
+    this.taskService.todoList.find(x=>x.name == this.item.name).isTick = this.item.isTick;
+    this.onComplete();
   }
 
   test(){
     console.log("test!!");
   }
+
 
 
 }
