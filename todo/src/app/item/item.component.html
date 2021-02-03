@@ -1,9 +1,9 @@
 
-<div class="new-todo" *ngIf="!this.isRemove" (mouseenter) ="mouseEnter() "  (mouseleave) ="mouseEnter()">
+<div class="new-todo" *ngIf="!this.item.isRemove" (mouseenter) ="mouseEnter()" (mouseleave) ="mouseEnter()">
     <label class="round toggle-all" >
-        <input type="checkbox" id={{this.item.name}}/>
+        <input type="checkbox" id={{this.item.name}}  (change)="onChangeTick()" />
         <label for="{{this.item.name}}"></label>
     </label>
-    <input class="input-main" placeholder={{this.item.name}}/>
-    <button class="close-btn" *ngIf="this.isFocus" (click)="this.onRemove()" >X</button>
+    <input class="input-main" placeholder={{this.item.name}} (keydown.enter)="save($event);"/>
+    <button class="close-btn" *ngIf="this.isFocus" (click)="this.onDelete()" >X</button>
 </div>

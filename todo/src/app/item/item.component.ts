@@ -2,7 +2,9 @@ import { Component, OnInit,Input } from '@angular/core';
 
 export interface IItemStruct{
   name:string,
-  complete:boolean
+  complete:boolean,
+  isTick:boolean,
+  isRemove:boolean
 }
 
 @Component({
@@ -14,7 +16,7 @@ export class ItemComponent implements OnInit {
 
   @Input()item:IItemStruct;
 
-  isRemove:boolean;
+  //isRemove:boolean;
   isFocus:boolean;
 
   constructor() { }
@@ -22,16 +24,11 @@ export class ItemComponent implements OnInit {
   }
 
 
-  onEdit():void{
-    // unlock the editable
-  }
 
   onChange(name:string):void{
     //TODO emit event: the task has been changed.
-
     //如果資料為空，刪除任務
     //反之，修改資料名稱
-
   }
 
   onComplete():void{
@@ -39,19 +36,28 @@ export class ItemComponent implements OnInit {
     this.item.complete = !this.item.complete;
   }
 
-  onRemove():void{
-    //TODO 刪除自己
-    this.isRemove = true;
-  }
-
-  onFocus():void{
-    console.log("focus");
+  onDelete():void{
+    this.item.isRemove = true;
   }
 
   mouseEnter(){
    this.isFocus = !this.isFocus;
  }
 
- 
+ save(event: any) {
+  if(!event.target.value){
+    return this.onDelete();
+  }
+  this.item.name = event.target.value;
+}
+
+  onChangeTick(){
+    this.item.isTick = !this.item.isTick;
+  }
+
+  test(){
+    console.log("test!!");
+  }
+
 
 }
