@@ -1,12 +1,18 @@
 
 <div>
     <div class="new-todo">
-        <label class="toggle-all" textWrap="true" (click)="onAllTcikComplete()" >{{getIcon()}}</label>
-        <input #taskinput class="input-main " [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  /></div>
-    <div *ngFor="let task of taskService.todoList"><app-item [item]="task"></app-item></div>
-    <div *ngIf="taskService.todoList.length>0" style="background-color: rgb(248, 245, 241); float:right"> 
-        <button>All</button>
-        <button>Active</button>
-        <button (click)="onbtnRemoveAllCompletedTasks()">Completed</button>
+        <label class="toggle-all"  [ngStyle]="{'color': this.IsAllComplete ? 'lightslategray' : ''}" textWrap="true" (click)="onChangeAllStatus()" > {{this.Icon}}</label>
+        <input class="input-main " style="font-style: italic;" [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  /></div>
+    <div *ngFor="let task of this.getTaskListByPage(currentPage)"><app-item [item]="task"></app-item></div>
+    <div *ngIf="this.HasTask" class="page-footer"> 
+        <div style="width: 20%;">{{this.LeftMsg}}</div>
+        <div>
+            <label class="page-tab-btn page-tab-border" [ngStyle]="{'border': this.currentPage === 0 ? '1px solid  rgba(175, 47, 47, 0.2)' : ''}" (click)="onSelect(0)">All</label>
+            <label class="page-tab-btn page-tab-border" [ngStyle]="{'border': this.currentPage === 1 ? '1px solid  rgba(175, 47, 47, 0.2)' : ''}" (click)="onSelect(1)" >Active</label>
+            <label class="page-tab-btn page-tab-border" [ngStyle]="{'border': this.currentPage === 2 ? '1px solid  rgba(175, 47, 47, 0.2)' : ''}" (click)="onSelect(2)">Completed</label>
+        </div>
+        <div style=" display:block; width:26%; text-align-last: right;" ><label class="page-tab-btn clear-btn" *ngIf="this.HasTickedYet" (click)="onbtnRemoveAllCompletedTasks()">Clear completed</label></div>
+        
     </div>
+
 </div>

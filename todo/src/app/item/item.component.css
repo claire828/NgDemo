@@ -42,14 +42,21 @@ opacity: 1;
     border:none;
     float: right;
     outline: none;
-    right: 30px;
+    right: 10px;
     position: absolute;
-    top: 20px;
+    top: 10px;
     background-color: transparent;
-    height: 28px;
-    width: 28px;
-    font-size: x-large;
-    color: #d48e8e;
-    font-weight: 300;
+    font-size: 30px;
+    color: #cc9a9a;
+    margin-bottom: 11px;
+    transition: color 0.2s ease-out;
+    vertical-align: baseline;
+    font-family: inherit;
+    font-weight: inherit;
 }
 
+.close-btn:hover{
+    color: #bb7b7b;
+    transition: color 0.2s ease-out;
+    font-weight:340;
+}

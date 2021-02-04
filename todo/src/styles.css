@@ -46,6 +46,7 @@
 
 
 
+
 .toggle-all{
     font-size: 22px;
     color: #e6e6e6;
@@ -56,11 +57,15 @@
 .input-main{
     width: 80%;
     border: 0;
-    font-style: italic;
     outline: none;
     font-size: 24px;
     font-family: inherit;
     font-weight: inherit;
     line-height: 1.4em;
     color: rgb(202, 202, 202);
+    font-style: normal;
+}
+
+.input-main-ticked::placeholder{
+    color:rgb(165, 165, 165);
 }
