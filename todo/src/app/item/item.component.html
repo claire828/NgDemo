@@ -1,5 +1,5 @@
 
-<div class="new-todo" style="box-shadow:inset 0.5px -1px 1px 0 rgb(0 0 0 / 20%); text-align: left;" *ngIf="!this.item.isRemove" (mouseenter) ="mouseEnter()" (mouseleave) ="mouseEnter()">
+<div class="new-todo item-border"  *ngIf="!this.item.isRemove" (mouseenter) ="mouseEnter()" (mouseleave) ="mouseEnter()">
     <label class="round toggle-all" >
         <input type="checkbox" [checked]="this.item.complete" id={{this.item.uuid}}  (change)="onChangeTick()" />
         <label for="{{this.item.uuid}}"></label>

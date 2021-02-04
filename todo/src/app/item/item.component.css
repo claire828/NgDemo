@@ -60,3 +60,8 @@ opacity: 1;
     transition: color 0.2s ease-out;
     font-weight:340;
 }
+
+.item-border{
+    box-shadow:inset 0px 0px 0px 1px rgb(0 0 0 / 10%); 
+    text-align: left;
+}

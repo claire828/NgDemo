@@ -31,20 +31,13 @@ export class ItemComponent implements OnInit {
 
  save(event: any) {
   if(!event.target.value) return this.onDelete();
-  
+
   this.taskService.updateTaskName(this.item,event.target.value);
 }
 
   onChangeTick(){
     this.item.complete = !this.item.complete;
     this.onComplete();
-  }
-
-  @Input('ngStyle')
-  getStyle(){
-    const style = this.item.complete? "{'text-decoration': 'line-through'}" : "{'text-decoration': 'line-through'}";
-    //const style = this.item.isTick? "{text-decoration: line-through}" : "{text-decoration: line-through}";
-   return style;
   }
 
 

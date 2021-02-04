@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { Apollo } from 'apollo-angular';
 import {TaskDB} from './db/taskDB';
 import faker from 'faker';
+import gql from 'graphql-tag';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +13,30 @@ export class TaskManagerService {
   private taskDB:TaskDB;
   constructor(private apollo:Apollo) {
     this.taskDB = new TaskDB();
+    console.log('send')
+    this.apollo
+    .watchQuery({
+      query: gql`
+        {
+          list {
+            id
+            status
+            value
+          }
+        }
+      `,
+    })
+    .valueChanges.subscribe((result: any) => {
+      try {
+        const { data } = result
+        if(data && data.list) {
+          // return data.List
+          console.log(result)
+        }
+      } catch(e) {
+        console.log(e.message)
+      }
+    })
    }
 
 

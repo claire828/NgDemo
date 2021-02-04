@@ -1,6 +1,5 @@
 
 import {IItemStruct} from '../def/defTask'
-import {Page} from '../def/defTask'
 
 export class TaskDB{
 

@@ -1,8 +1,9 @@
 
 <div>
-    <div class="new-todo">
+    <div [ngClass]="[this.getTaskListByPage(currentPage).length>0 ? 'new-todo' : 'new-todo todoapp' ]">
         <label class="toggle-all"  [ngStyle]="{'color': this.IsAllComplete ? 'lightslategray' : ''}" textWrap="true" (click)="onChangeAllStatus()" > {{this.Icon}}</label>
-        <input class="input-main " style="font-style: italic;" [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  /></div>
+        <input class="input-list" [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  />
+    </div>
     <div *ngFor="let task of this.getTaskListByPage(currentPage)"><app-item [item]="task"></app-item></div>
     <div *ngIf="this.HasTask" class="page-footer"> 
         <div style="width: 20%;">{{this.LeftMsg}}</div>

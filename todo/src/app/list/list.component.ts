@@ -20,29 +20,7 @@ export class ListComponent implements OnInit {
   constructor(public taskService:TaskManagerService, private apollo: Apollo ) { }
 
   ngOnInit(): void {
-    this.apollo
-    .watchQuery({
-      query: gql`
-        {
-          list {
-            id
-            status
-            value
-          }
-        }
-      `,
-    })
-    .valueChanges.subscribe((result: any) => {
-      try {
-        const { data } = result
-        if(data && data.list) {
-          // return data.List
-          console.log(result)
-        }
-      } catch(e) {
-        console.log(e.message)
-      }
-    })
+    
   }
   onFocus():void{
     //TODO 點下去不應該改變文字
