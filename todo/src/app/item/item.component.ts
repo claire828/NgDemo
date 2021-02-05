@@ -12,7 +12,6 @@ export class ItemComponent implements OnInit {
 
   @Input()item:IItemStruct;
 
-
   constructor(private taskService:TaskManagerService) { }
   ngOnInit(): void {
   }

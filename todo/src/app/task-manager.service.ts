@@ -17,19 +17,14 @@ export class TaskManagerService {
     .watchQuery({
       query: gql`
         query {
-          list {
-            uuid
-            status
-            name
-          }
+          list {uuid status name}
         }
       `,
     })
     .valueChanges.subscribe((result: any) => {
       try {
-        const { data } = result
-        if(data?.list) {
-          this.taskDB.insertAllData(data.list);
+        if(result?.data?.list) {
+          this.taskDB.insertAllData(result.data.list);
           console.log(result)
         }
       } catch(e) {
@@ -39,43 +34,76 @@ export class TaskManagerService {
    }
 
 
-  getListFromServer():Observable<IItemStruct[]>{
-    return of(this.taskDB.todoList);
-  }
-
   
   addItem(name:string):void{
     let task:IItemStruct = {
       name,
-      id:`${name}.${faker.random.uuid()}`,
+      uuid:`${name}.${faker.random.uuid()}`,
       complete:false,
       isRemove:false,
       isFocus:false
-    }
-    //TODO send to server, when success then add to the task
-    this.taskDB.addTask(task);
+    };
+    this.apollo.mutate({
+      mutation: gql`mutation {
+        create(uuid: "${task.uuid}", name: "${name}") {
+          id uuid status name }
+      }`
+    }).subscribe(result => {
+      this.taskDB.addTask(task);
+    }, error => {
+      console.log(`failed request:[add item]`);
+    });
   }
 
 
   updateTaskName(task:IItemStruct, newName:string){
-    this.taskDB.getTask(task.id).name = newName;
-    //TODO send to server
+    let newTask = Object.assign({},task);
+    newTask.name = newName;
+    this.apollo.mutate({
+      mutation: gql`${this.generateUpdateQuery(newTask)}`
+    }).subscribe(result => {
+      this.taskDB.getTask(task.uuid).name = newName;
+    }, error => {
+      console.log(`failed request:[add item]`);
+    });
   }
 
-  removeTask(task:IItemStruct){
-    this.taskDB.getTask(task.id).isRemove = true;
-    //TODO send to server
-    this.taskDB.resetListAfterRemoving();
-  }
 
   completeTask(task:IItemStruct, complete:boolean){
-    //TODO send to the server
-    this.taskDB.getTask(task.id).complete = complete;
+    let newTask = Object.assign({},task);
+    newTask.complete = complete;
+    this.apollo.mutate({
+      mutation: gql`${this.generateUpdateQuery(newTask)}`
+    }).subscribe(result => {
+      this.taskDB.getTask(task.uuid).complete = complete;
+    }, error => {
+      console.log(`failed request:[add item]`);
+    });
+  }
+
+  generateUpdateQuery(newTask:IItemStruct):string{
+    return `mutation {
+      update(uuid: "${newTask.uuid}", name: "${newTask.name}", status:${Number(newTask.complete)}) {
+        id uuid status name }
+    }`;
   }
 
   completeAllTasks(complete:boolean){
     //TODO send to the server
     this.taskDB.completeAllTasks(complete);
+  }
+
+  removeTask(task:IItemStruct){
+    this.apollo.mutate({
+      mutation: gql`mutation {
+        delete(uuid: "${task.uuid}") {id uuid status name }
+      }`
+    }).subscribe(result => {
+      this.taskDB.getTask(task.uuid).isRemove = true;
+      this.taskDB.resetListAfterRemoving();
+    }, error => {
+      console.log(`failed request:[add item]`);
+    });
   }
 
   removeAllCompleteTask(){
@@ -85,8 +113,11 @@ export class TaskManagerService {
   }
 
 
-  get list():IItemStruct[]{
+  get List():IItemStruct[]{
     return this.taskDB.todoList;
   }
+
+
+
 
 }

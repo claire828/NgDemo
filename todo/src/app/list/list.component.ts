@@ -59,11 +59,11 @@ export class ListComponent implements OnInit {
   getTaskListByPage(page:Page):IItemStruct[]{
     switch(page){
         case Page.ALL:
-        return this.taskService.list;
+        return this.taskService.List;
         case Page.ACTIVE:
         case Page.COMPLETE:
           let complete = page == Page.COMPLETE ?? false;
-          return this.taskService.list.filter(x=>x.complete === complete);
+          return this.taskService.List.filter(x=>x.complete === complete);
         default:
             break;
     }
@@ -74,7 +74,7 @@ export class ListComponent implements OnInit {
     return this.HasTask ? "❯" : " ";
   }
   get TaskCount():number{
-    return this.taskService.list.length;
+    return this.taskService.List.length;
   }
 
   get LeftMsg():string{
@@ -86,17 +86,17 @@ export class ListComponent implements OnInit {
   }
 
   get ActivedTaskCount():number{
-    return this.taskService.list.filter(x=>x.complete === false).length;
+    return this.taskService.List.filter(x=>x.complete === false).length;
   }
 
   get IsAllComplete():boolean{
     if(!this.HasTask) return true;
-    if(this.taskService.list.find(x=>x.complete === false)) return false;
+    if(this.taskService.List.find(x=>x.complete === false)) return false;
     return true;
   }
 
   get HasTickedYet():boolean{
-    if( this.taskService.list.find(x=>x.complete === true)) return true;
+    if( this.taskService.List.find(x=>x.complete === true)) return true;
     return false;
   }
 
