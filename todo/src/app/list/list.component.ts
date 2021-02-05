@@ -16,11 +16,11 @@ export class ListComponent implements OnInit {
   readonly DAFAULTMSG:string="What needs to be done?";
   defaultInput:string =  this.DAFAULTMSG;
   currentPage:Page = Page.ALL;
+  currentPageCount:number = 1;
 
   constructor(public taskService:TaskManagerService, private apollo: Apollo ) { }
 
   ngOnInit(): void {
-    
   }
   onFocus():void{
     //TODO 點下去不應該改變文字
@@ -99,6 +99,31 @@ export class ListComponent implements OnInit {
     if( this.taskService.List.find(x=>x.complete === true)) return true;
     return false;
   }
+
+
+  readonly PAGE_COUNT:number = 5;
+  get TotalPage():number{
+    if(this.TaskCount <=5) return 1;
+    const extra = this.TaskCount % this.PAGE_COUNT !=0 ? 1 : 0;
+    let pageCount:number = +Math.floor((this.TaskCount) / this.PAGE_COUNT);
+    return pageCount + extra;
+  }
+
+
+  resetPage(increase:boolean){
+    const newPage = increase ? this.currentPageCount+ 1 : this.currentPageCount-1;
+    if(newPage < 0 || newPage >this.TotalPage ) return;
+    this.currentPageCount = newPage;
+  }
+
+  get ShowPre():boolean{
+    return this.currentPageCount>1 && this.TotalPage>1;
+  }
+
+  get ShowNext():boolean{
+    return this.currentPageCount<this.TotalPage && this.TotalPage>1;
+  }
+
 
 }
 

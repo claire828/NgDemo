@@ -74,7 +74,7 @@ export class TaskManagerService {
 
 
   async completeTask(task:IItemStruct, complete:boolean, skip:boolean=false){
-    let newTask = Object.assign({},task);
+    let newTask = Object.assign(task,{});
     newTask.complete = complete;
     this.apollo.mutate({
       mutation: gql`${this.generateUpdateQuery(newTask)}`
@@ -87,16 +87,15 @@ export class TaskManagerService {
   }
 
   async completeAllTasks(complete:boolean){
-    //TODO send to the server  - it can be optimized
     let clone = Object.assign(this.taskDB.todoList,{});
-    clone.forEach(task=>{
-      task.complete = !task.complete;
-      this.completeTask(task,complete,true);
-    });
+    for (const task of clone) {
+      task.complete = complete;
+      await this.completeTask(task,complete);
+    }
     this.taskDB.todoList = clone;
   }
 
-  generateUpdateQuery(newTask:IItemStruct):string{
+  private generateUpdateQuery(newTask:IItemStruct):string{
     return `mutation {
       update(uuid: "${newTask.uuid}", name: "${newTask.name}", status:${Number(newTask.complete)}) {
         id uuid status name }
