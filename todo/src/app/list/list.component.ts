@@ -54,6 +54,7 @@ export class ListComponent implements OnInit {
 
   onSelect(page:Page){
     this.currentPage = page;
+    this.forceResetPage(1);
   }
 
   getTaskListByPage(page:Page):IItemStruct[]{
@@ -69,12 +70,22 @@ export class ListComponent implements OnInit {
     }
     return[];
   }
-  
+
+  get PreciseList():IItemStruct[]{
+    let temp = [...this.taskService.List];
+    let startInx = 5 * (this.currentPageCount -1);
+    let endInx = this.currentPageCount * this.PAGE_COUNT;
+    temp = temp.slice(startInx, endInx);
+   // console.log(`start:${startInx}  endInx:${endInx}`);
+    return temp
+  }
+
   get Icon():string{
     return this.HasTask ? "❯" : " ";
   }
   get TaskCount():number{
     return this.taskService.List.length;
+    //return this.getTaskListByPage(this.currentPage).length;
   }
 
   get LeftMsg():string{
@@ -103,15 +114,21 @@ export class ListComponent implements OnInit {
 
   readonly PAGE_COUNT:number = 5;
   get TotalPage():number{
-    if(this.TaskCount <=5) return 1;
-    const extra = this.TaskCount % this.PAGE_COUNT !=0 ? 1 : 0;
-    let pageCount:number = +Math.floor((this.TaskCount) / this.PAGE_COUNT);
+    const count = this.getTaskListByPage(this.currentPage).length;
+    if(count <=5) return 1;
+    const extra = count% this.PAGE_COUNT !=0 ? 1 : 0;
+    let pageCount:number = +Math.floor((count) / this.PAGE_COUNT);
     return pageCount + extra;
   }
 
 
   resetPage(increase:boolean){
     const newPage = increase ? this.currentPageCount+ 1 : this.currentPageCount-1;
+    if(newPage < 0 || newPage >this.TotalPage ) return;
+    this.currentPageCount = newPage;
+  }
+
+  forceResetPage(newPage:number){
     if(newPage < 0 || newPage >this.TotalPage ) return;
     this.currentPageCount = newPage;
   }
@@ -123,7 +140,6 @@ export class ListComponent implements OnInit {
   get ShowNext():boolean{
     return this.currentPageCount<this.TotalPage && this.TotalPage>1;
   }
-
 
 }
 

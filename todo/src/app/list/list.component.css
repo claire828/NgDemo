@@ -43,3 +43,20 @@
 .page-tab-border:hover{
     border: 1px solid rgba(190, 65, 65, 0.1);
 }
+
+.page-selector-btn{
+    border: none;
+    margin: 4px;
+    background-color: transparent;
+    outline: none;
+}
+
+
+.page-selector-btn:hover{
+    color: green;
+}
+
+.page-selector-btn:disabled{
+    color: rgb(255, 255, 255);
+   
+}

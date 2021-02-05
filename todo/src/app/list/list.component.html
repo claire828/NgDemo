@@ -6,10 +6,10 @@
     </div>
     <div *ngFor="let task of this.getTaskListByPage(currentPage)"><app-item [item]="task"></app-item></div>
     
-    <div class="page-footer" style="box-shadow:none;justify-content:center">
-        <label *ngIf="this.ShowPre"  class="page-tab-btn" (click)="this.resetPage(false)"> 〈 </label>
-         {{this.currentPageCount}}/{{this.TotalPage}}
-         <label *ngIf="this.ShowNext" class="page-tab-btn" (click)="this.resetPage(true)"> 〉 </label>
+    <div *ngIf="this.TaskCount>0" class="page-footer" style="box-shadow:none;justify-content:center; text-align:center; vertical-align:middle; line-height: 50px;">
+        <button [disabled]="!this.ShowPre"  class="page-selector-btn" (click)="this.resetPage(false)">〈 </button>
+        <div> {{this.currentPageCount}}/{{this.TotalPage}}</div>
+        <button [disabled]="!this.ShowNext" class="page-selector-btn" (click)="this.resetPage(true)"> 〉</button>
     </div>
     <div *ngIf="this.HasTask" class="page-footer" > 
         <div style="width: 20%;">{{this.LeftMsg}}</div>
