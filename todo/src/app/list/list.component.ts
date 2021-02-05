@@ -13,6 +13,7 @@ import {Page, IItemStruct} from '../def/defTask';
 })
 export class ListComponent implements OnInit {
 
+  readonly PAGE_COUNT:number = 5;
   readonly DAFAULTMSG:string="What needs to be done?";
   defaultInput:string =  this.DAFAULTMSG;
   currentPage:Page = Page.ALL;
@@ -23,7 +24,6 @@ export class ListComponent implements OnInit {
   ngOnInit(): void {
   }
   onFocus():void{
-    //TODO 點下去不應該改變文字
     this.defaultInput = "";
   }
 
@@ -115,7 +115,7 @@ export class ListComponent implements OnInit {
   }
 
 
-  readonly PAGE_COUNT:number = 5;
+  
   get TotalPage():number{
     const count = this.getTaskListByPage(this.currentPage).length;
     if(count <=5) return 1;
