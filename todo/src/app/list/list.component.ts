@@ -72,20 +72,23 @@ export class ListComponent implements OnInit {
   }
 
   get PreciseList():IItemStruct[]{
-    let temp = [...this.taskService.List];
+    let temp = [...this.getTaskListByPage(this.currentPage)];
     let startInx = 5 * (this.currentPageCount -1);
     let endInx = this.currentPageCount * this.PAGE_COUNT;
     temp = temp.slice(startInx, endInx);
-   // console.log(`start:${startInx}  endInx:${endInx}`);
     return temp
   }
+
+  get PreciseListCount():number{
+    return this.PreciseList.length;
+  }
+
 
   get Icon():string{
     return this.HasTask ? "❯" : " ";
   }
   get TaskCount():number{
     return this.taskService.List.length;
-    //return this.getTaskListByPage(this.currentPage).length;
   }
 
   get LeftMsg():string{
@@ -120,7 +123,6 @@ export class ListComponent implements OnInit {
     let pageCount:number = +Math.floor((count) / this.PAGE_COUNT);
     return pageCount + extra;
   }
-
 
   resetPage(increase:boolean){
     const newPage = increase ? this.currentPageCount+ 1 : this.currentPageCount-1;

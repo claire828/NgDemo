@@ -4,7 +4,7 @@
         <label class="toggle-all"  [ngStyle]="{'color': this.IsAllComplete ? 'lightslategray' : ''}" textWrap="true" (click)="onChangeAllStatus()" > {{this.Icon}}</label>
         <input class="input-list" [(ngModel)]="this.defaultInput" placeholder={{defaultInput}} (focus)="this.onFocus()" (focusout)="onFocusOutEvent($event)" (keydown.enter)="save($event);"  />
     </div>
-    <div *ngFor="let task of this.getTaskListByPage(currentPage)"><app-item [item]="task"></app-item></div>
+    <div *ngFor="let task of this.PreciseList"><app-item [item]="task"></app-item></div>
     
     <div *ngIf="this.TaskCount>0" class="page-footer" style="box-shadow:none;justify-content:center; text-align:center; vertical-align:middle; line-height: 50px;">
         <button [disabled]="!this.ShowPre"  class="page-selector-btn" (click)="this.resetPage(false)">〈 </button>
