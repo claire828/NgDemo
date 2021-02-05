@@ -1,8 +1,8 @@
 
 <div class="new-todo item-border"  *ngIf="!this.item.isRemove" (mouseenter) ="mouseEnter()" (mouseleave) ="mouseEnter()">
     <label class="round toggle-all" >
-        <input type="checkbox" [checked]="this.item.complete" id={{this.item.uuid}}  (change)="onChangeTick()" />
-        <label for="{{this.item.uuid}}"></label>
+        <input type="checkbox" [checked]="this.item.complete" id={{this.item.id}}  (change)="onChangeTick()" />
+        <label for="{{this.item.id}}"></label>
     </label>
     <input [ngClass]="[this.item.complete ? 'input-main input-main-ticked' : 'input-main' ]" [ngStyle]="{'text-decoration-line': this.item.complete ? 'line-through' : ''}" placeholder={{this.item.name}} (keydown.enter)="save($event);"/>
     <button class="close-btn" *ngIf="this.item.isFocus" (click)="this.onDelete()" >ｘ</button>

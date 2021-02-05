@@ -13,15 +13,14 @@ export class TaskManagerService {
   private taskDB:TaskDB;
   constructor(private apollo:Apollo) {
     this.taskDB = new TaskDB();
-    console.log('send')
     this.apollo
     .watchQuery({
       query: gql`
-        {
+        query {
           list {
-            id
+            uuid
             status
-            value
+            name
           }
         }
       `,
@@ -29,8 +28,8 @@ export class TaskManagerService {
     .valueChanges.subscribe((result: any) => {
       try {
         const { data } = result
-        if(data && data.list) {
-          // return data.List
+        if(data?.list) {
+          this.taskDB.insertAllData(data.list);
           console.log(result)
         }
       } catch(e) {
@@ -46,10 +45,9 @@ export class TaskManagerService {
 
   
   addItem(name:string):void{
-    
     let task:IItemStruct = {
       name,
-      uuid:`${name}.${faker.random.uuid()}`,
+      id:`${name}.${faker.random.uuid()}`,
       complete:false,
       isRemove:false,
       isFocus:false
@@ -60,19 +58,19 @@ export class TaskManagerService {
 
 
   updateTaskName(task:IItemStruct, newName:string){
-    this.taskDB.getTask(task.uuid).name = newName;
+    this.taskDB.getTask(task.id).name = newName;
     //TODO send to server
   }
 
   removeTask(task:IItemStruct){
-    this.taskDB.getTask(task.uuid).isRemove = true;
+    this.taskDB.getTask(task.id).isRemove = true;
     //TODO send to server
     this.taskDB.resetListAfterRemoving();
   }
 
   completeTask(task:IItemStruct, complete:boolean){
     //TODO send to the server
-    this.taskDB.getTask(task.uuid).complete = complete;
+    this.taskDB.getTask(task.id).complete = complete;
   }
 
   completeAllTasks(complete:boolean){

@@ -1,17 +1,27 @@
 
-import {IItemStruct} from '../def/defTask'
+import {IItemStruct,ITaskStruct} from '../def/defTask'
 
+
+//TODO 照存ＵＵＩＤ好了
 export class TaskDB{
 
     todoList:IItemStruct[];
-
     constructor(){
         this.todoList = [];
     }
-   
 
-    insertAllData(data:any){
-        
+    insertAllData(list:any[]){
+       this.todoList = [];
+       list.forEach(x=>{
+            let task:IItemStruct = {
+                id:x.uuid,
+                name:x.name,
+                complete:Boolean(x.status),
+                isFocus:false,
+                isRemove:false
+            }
+            this.addTask(task);
+        });
     }
 
     addTask(task:IItemStruct){
@@ -19,8 +29,8 @@ export class TaskDB{
     }
 
 
-    getTask(uuid:string):IItemStruct{
-        return this.todoList.find(x=>x.uuid === uuid);
+    getTask(id:string):IItemStruct{
+        return this.todoList.find(x=>x.id === id);
     }
 
     resetListAfterRemoving(){

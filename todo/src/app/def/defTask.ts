@@ -8,7 +8,7 @@ export enum Page{
   export interface ITaskStruct{
     name:string,
     complete:boolean,
-    uuid:string
+    id:string
   }
 
 export interface IItemStruct extends ITaskStruct {
