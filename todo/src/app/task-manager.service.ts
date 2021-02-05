@@ -13,6 +13,11 @@ export class TaskManagerService {
   private taskDB:TaskDB;
   constructor(private apollo:Apollo) {
     this.taskDB = new TaskDB();
+    this.getListFromServer();
+   }
+
+
+  getListFromServer(){
     this.apollo
     .watchQuery({
       query: gql`
@@ -31,27 +36,26 @@ export class TaskManagerService {
         console.log(e.message)
       }
     })
-   }
-
-
+  }
   
   addItem(name:string):void{
     let task:IItemStruct = {
       name,
-      uuid:`${name}.${faker.random.uuid()}`,
+      uuid:`${new Date().getTime()}.${faker.random.uuid()}`,
       complete:false,
       isRemove:false,
       isFocus:false
     };
+    let query=`mutation {
+      create(uuid: "${task.uuid}", name: "${name}") {
+        id uuid status name }
+    }`
     this.apollo.mutate({
-      mutation: gql`mutation {
-        create(uuid: "${task.uuid}", name: "${name}") {
-          id uuid status name }
-      }`
+      mutation: gql`${query}`
     }).subscribe(result => {
       this.taskDB.addTask(task);
     }, error => {
-      console.log(`failed request:[add item]`);
+      console.log(`failed request:[addItem]`);
     });
   }
 
@@ -64,21 +68,32 @@ export class TaskManagerService {
     }).subscribe(result => {
       this.taskDB.getTask(task.uuid).name = newName;
     }, error => {
-      console.log(`failed request:[add item]`);
+      console.log(`failed request:[updateTaskName]`);
     });
   }
 
 
-  completeTask(task:IItemStruct, complete:boolean){
+  async completeTask(task:IItemStruct, complete:boolean, skip:boolean=false){
     let newTask = Object.assign({},task);
     newTask.complete = complete;
     this.apollo.mutate({
       mutation: gql`${this.generateUpdateQuery(newTask)}`
     }).subscribe(result => {
+      if(skip) return;
       this.taskDB.getTask(task.uuid).complete = complete;
     }, error => {
-      console.log(`failed request:[add item]`);
+      console.log(`failed request:[completeTask]`);
     });
+  }
+
+  async completeAllTasks(complete:boolean){
+    //TODO send to the server  - it can be optimized
+    let clone = Object.assign(this.taskDB.todoList,{});
+    clone.forEach(task=>{
+      task.complete = !task.complete;
+      this.completeTask(task,complete,true);
+    });
+    this.taskDB.todoList = clone;
   }
 
   generateUpdateQuery(newTask:IItemStruct):string{
@@ -88,17 +103,14 @@ export class TaskManagerService {
     }`;
   }
 
-  completeAllTasks(complete:boolean){
-    //TODO send to the server
-    this.taskDB.completeAllTasks(complete);
-  }
-
-  removeTask(task:IItemStruct){
+   async removeTask(task:IItemStruct, skip:boolean=false){
+    let query=`mutation {
+      delete(uuid: "${task.uuid}") {id uuid status name }
+    }`;
     this.apollo.mutate({
-      mutation: gql`mutation {
-        delete(uuid: "${task.uuid}") {id uuid status name }
-      }`
+      mutation: gql`${query}`
     }).subscribe(result => {
+      if(skip) return;
       this.taskDB.getTask(task.uuid).isRemove = true;
       this.taskDB.resetListAfterRemoving();
     }, error => {
@@ -106,10 +118,14 @@ export class TaskManagerService {
     });
   }
 
-  removeAllCompleteTask(){
-    //TODO send to the server
-    this.taskDB.todoList.filter(x=>x.complete).map(task=>task.isRemove = true);
-    this.taskDB.resetListAfterRemoving();
+  async removeAllCompleteTask(){
+    let clone = Object.assign(this.taskDB.todoList,{});
+    const list = clone.filter(x=>x.complete);
+    for (const task of list) {
+      delete clone[clone.indexOf(task)];
+      await this.removeTask(task,true);
+    }
+    this.taskDB.todoList = clone.filter(x=>x);
   }
 
 
